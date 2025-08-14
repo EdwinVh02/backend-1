@@ -1,0 +1,15 @@
+[variables]
+NIXPACKS_PHP_VERSION = "8.2"
+NIXPACKS_NODE_VERSION = "18"
+
+[phases.setup]
+cmd = "mkdir -p bootstrap/cache storage/logs storage/framework/cache/data storage/framework/sessions storage/framework/views resources/views && chmod -R 775 bootstrap/cache storage"
+
+[phases.install]
+cmd = "composer install --no-dev --optimize-autoloader && npm ci && npm run build"
+
+[phases.build]
+cmd = "php artisan config:cache && php artisan route:cache"
+
+[start]
+cmd = "php artisan migrate --force && php artisan production:initialize-data --force && php artisan serve --host=0.0.0.0 --port=$PORT"
